@@ -24,7 +24,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="Title"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -54,6 +55,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
+                android:singleLine="true"
                 android:contentDescription="Enter your diary title"/>
 
             <TextView
@@ -81,6 +83,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_margin="8dp"
+            android:maxLines="10"
             android:contentDescription="Enter your diary content"/>
 
         <TextView
