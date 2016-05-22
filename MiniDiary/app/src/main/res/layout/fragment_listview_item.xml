@@ -31,17 +31,6 @@
             android:layout_marginTop="4dp"
             />
 
-        <TextView
-            android:id="@+id/listview_item_location"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="At Causeway Bay"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="4dp"
-            android:textSize="12sp"/>
-
     </LinearLayout>
 
     <ImageView

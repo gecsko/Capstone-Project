@@ -25,7 +25,6 @@ public class DiaryContract {
 
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DATE = "date";
-        public static final String COLUMN_LOCATION = "location";
         public static final String COLUMN_LAT = "lat";
         public static final String COLUMN_LON = "lon";
         public static final String COLUMN_WEATHER = "weather";

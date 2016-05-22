@@ -16,7 +16,6 @@ public class DiaryAdapter extends CursorAdapter {
 
     private TextView mTitleTextView;
     private TextView mDateTextView;
-    private TextView mLocationTextView;
 
     public DiaryAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -36,9 +35,8 @@ public class DiaryAdapter extends CursorAdapter {
         //TextView callSignTextView = (TextView)view.findViewById(R.id.textview_callsign);
         viewHolder.mTitleTextView.setText(cursor.getString(MainFragment.COL_TITLE));
         viewHolder.mDateTextView.setText(cursor.getString(MainFragment.COL_DATE));
-        viewHolder.mLocationTextView.setText(cursor.getString(MainFragment.COL_LOCATION));
+        viewHolder.mTitleTextView.setTextColor(cursor.getInt(MainFragment.COL_MOOD));
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -48,12 +46,10 @@ public class DiaryAdapter extends CursorAdapter {
     class ViewHolder {
         TextView mTitleTextView;
         TextView mDateTextView;
-        TextView mLocationTextView;
 
         public ViewHolder(View rootView) {
             mTitleTextView = (TextView) rootView.findViewById(R.id.listview_title);
             mDateTextView = (TextView) rootView.findViewById(R.id.listview_item_data_time);
-            mLocationTextView = (TextView) rootView.findViewById(R.id.listview_item_location);
         }
     }
 }

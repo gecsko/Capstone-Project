@@ -26,11 +26,10 @@ public class DiaryDbHelper extends SQLiteOpenHelper {
                 // the ID of the location entry associated with this diary data
                 DiaryContract.DiaryEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 DiaryContract.DiaryEntry.COLUMN_DATE + " TEXT NOT NULL, " +
-                DiaryContract.DiaryEntry.COLUMN_LOCATION + " TEXT, " +
                 DiaryContract.DiaryEntry.COLUMN_LAT + " REAL, " +
                 DiaryContract.DiaryEntry.COLUMN_LON + " REAL, " +
                 DiaryContract.DiaryEntry.COLUMN_WEATHER + " TEXT," +
-                DiaryContract.DiaryEntry.COLUMN_MOOD + " TEXT," +
+                DiaryContract.DiaryEntry.COLUMN_MOOD + " INTEGER," +
                 DiaryContract.DiaryEntry.COLUMN_CONTENT + " TEXT);";
 
         db.execSQL(SQL_CREATE_DIARY_TABLE);

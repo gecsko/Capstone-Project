@@ -36,7 +36,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             DiaryContract.DiaryEntry._ID,
             DiaryContract.DiaryEntry.COLUMN_TITLE,
             DiaryContract.DiaryEntry.COLUMN_DATE,
-            DiaryContract.DiaryEntry.COLUMN_LOCATION,
             DiaryContract.DiaryEntry.COLUMN_LAT,
             DiaryContract.DiaryEntry.COLUMN_LON,
             DiaryContract.DiaryEntry.COLUMN_WEATHER,
@@ -48,12 +47,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     static final int COL_ID = 0;
     static final int COL_TITLE = 1;
     static final int COL_DATE = 2;
-    static final int COL_LOCATION = 3;
-    static final int COL_LAT = 4;
-    static final int COL_LON = 5;
-    static final int COL_WEATHER= 6;
-    static final int COL_MOOD = 7;
-    static final int COL_CONTENT = 8;
+    static final int COL_LAT = 3;
+    static final int COL_LON = 4;
+    static final int COL_WEATHER= 5;
+    static final int COL_MOOD = 6;
+    static final int COL_CONTENT = 7;
 
     public MainFragment() {
         // Required empty public constructor
@@ -150,17 +148,15 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         String title = cursor.getString(COL_TITLE);
         String date = cursor.getString(COL_DATE);
-        String location = cursor.getString(COL_LOCATION);
         Double lat = cursor.getDouble(COL_LAT);
         Double lon = cursor.getDouble(COL_LON);
         String weather = cursor.getString(COL_WEATHER);
-        String mood = cursor.getString(COL_MOOD);
+        int mood = cursor.getInt(COL_MOOD);
         String content = cursor.getString(COL_CONTENT);
 
         HashMap<String, Object> selectedDiary = new HashMap<String, Object>();
         selectedDiary.put("Title", title);
         selectedDiary.put("Date", date);
-        selectedDiary.put("Location", location);
         selectedDiary.put("Lat", lat);
         selectedDiary.put("Lon", lon);
         selectedDiary.put("Weather", weather);

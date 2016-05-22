@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -34,11 +36,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.thebluealliance.spectrum.SpectrumDialog;
+import com.thebluealliance.spectrum.SpectrumPreference;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class AddDiaryFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -54,18 +59,17 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     EditText titleEditText;
     TextView dateTextView;
     EditText contentEditText;
-    TextView colorTextView;
-    TextView locationTextView;
+    TextView mColorTextView;
     String currentDateandTime;
-    String location;
     String mWeather;
+    int mSelectedColor = 0xff000000; // default black
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mWeather= intent.getStringExtra(SimpleIntentService.PARAM_OUT_MSG);
 
-            Toast.makeText(getContext(), mWeather, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), mWeather, Toast.LENGTH_SHORT).show();
             //TextView result = (TextView) getView().findViewById(R.id.add_diary_location);
             //result.setText(text);
             //result.setText(text);
@@ -134,20 +138,33 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         titleEditText = (EditText) rootView.findViewById(R.id.add_diary_title);
         dateTextView = (TextView) rootView.findViewById(R.id.add_diary_time_date);
         contentEditText = (EditText) rootView.findViewById(R.id.add_diary_content);
-        colorTextView = (TextView) rootView.findViewById(R.id.add_diary_mood_color);
-        locationTextView = (TextView) rootView.findViewById(R.id.add_diary_location);
-
-        locationTextView.setText("Unknown");
+        mColorTextView = (TextView) rootView.findViewById(R.id.add_diary_mood_color);
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
         currentDateandTime = sdf.format(new Date());
 
         dateTextView.setText(currentDateandTime);
 
-        colorTextView.setOnClickListener(new View.OnClickListener() {
+        mColorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle data = new Bundle();
+                int [] colors = {Color.BLACK, Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.rgb(0x00,0x77,0xff), Color.rgb(0xff, 0x77, 0x00), Color.rgb(0xff, 0x40, 0x81)};
+                data.putCharSequence("title", "Mood Color");
+                data.putIntArray("colors", colors);
+
                 SpectrumDialog spectrumDialog = new SpectrumDialog();
+                spectrumDialog.setArguments(data);
+                spectrumDialog.setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(boolean positiveResult, @ColorInt int color) {
+                        if (positiveResult)
+                        {
+                            mSelectedColor = color;
+                            mColorTextView.setBackgroundColor(color);
+                        }
+                    }
+                });
                 spectrumDialog.show(getFragmentManager(), "abc");
             }
         });
@@ -221,13 +238,10 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
             Log.d("TAG", "Not right");
             return;
         }
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (mLastLocation != null) {
-
-            TextView locationTextView = (TextView) getActivity().findViewById(R.id.add_diary_location);
-            locationTextView.setText(mLastLocation.toString());
-
             Intent msgIntent = new Intent(getContext(), SimpleIntentService.class);
             msgIntent.putExtra(SimpleIntentService.PARAM_IN_LAT_MSG, mLastLocation.getLatitude());
             msgIntent.putExtra(SimpleIntentService.PARAM_IN_LON_MSG, mLastLocation.getLongitude());
@@ -251,10 +265,10 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_TITLE, title);
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_DATE, currentDateandTime);
-                contentValues.put(DiaryContract.DiaryEntry.COLUMN_LOCATION, location);
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_LAT, mLastLocation.getLatitude());
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_LON, mLastLocation.getLongitude());
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_WEATHER, mWeather);
+                contentValues.put(DiaryContract.DiaryEntry.COLUMN_MOOD, mSelectedColor);
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_CONTENT, content);
 
                 // Uri

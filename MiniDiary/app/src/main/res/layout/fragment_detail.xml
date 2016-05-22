@@ -40,15 +40,6 @@
                     android:layout_margin="8dp"
                     android:contentDescription="The moment Date and Time"
                     android:text="13:15 02052016"/>
-
-                <TextView
-                    android:id="@+id/detail_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:contentDescription="The moment location"
-                    android:text="At Causeway Bay"/>
             </LinearLayout>
 
             <LinearLayout
