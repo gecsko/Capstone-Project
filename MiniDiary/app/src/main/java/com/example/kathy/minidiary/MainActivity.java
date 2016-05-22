@@ -13,7 +13,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_main);
+
+
 
         if (savedInstanceState == null) {
             MainFragment mainFragment = new MainFragment();
@@ -25,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void openDetailFragment(HashMap<String, String> selectedDiary) {
+    public void openDetailFragment(HashMap<String, Object> selectedDiary) {
         //String selectedArtistId = (String) selected.get("id");
         if (twoPaneMode) {
             //Intent intent = new Intent(this, MainActivity.class).putExtra(Intent.EXTRA_TEXT, selectedArtistId);

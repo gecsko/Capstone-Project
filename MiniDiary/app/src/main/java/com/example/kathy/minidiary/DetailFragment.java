@@ -15,10 +15,11 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class DetailFragment extends Fragment {
 
-    private HashMap<String, String> mSelectedDiary;
+    private HashMap<String, Object> mSelectedDiary;
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -34,7 +35,7 @@ public class DetailFragment extends Fragment {
 
         if (intent != null && intent.hasExtra("selectedDiary")) {
             Log.d("hi", "r1");
-            mSelectedDiary = (HashMap<String, String>) intent.getSerializableExtra("selectedDiary");
+            mSelectedDiary = (HashMap<String, Object>) intent.getSerializableExtra("selectedDiary");
 
         } else if (getArguments() != null){
             Log.d("hi", "r2");
@@ -45,15 +46,24 @@ public class DetailFragment extends Fragment {
         TextView dateTimeTextView = (TextView) rootView.findViewById(R.id.detail_date_time);
         TextView contentTextView = (TextView) rootView.findViewById(R.id.detail_content);
         TextView mapTextView = (TextView) rootView.findViewById(R.id.detail_map);
+        TextView locationTextView = (TextView) rootView.findViewById(R.id.detail_location);
 
-        String text = mSelectedDiary.get("Title");
+        String text = (String) mSelectedDiary.get("Title");
         titleTextView.setText(text);
 
-        text = mSelectedDiary.get("Date");
+        text = (String) mSelectedDiary.get("Date");
         dateTimeTextView.setText(text);
 
-        text = mSelectedDiary.get("Content");
+        text = (String) mSelectedDiary.get("Content");
         contentTextView.setText(text);
+
+        text = (String) mSelectedDiary.get("Location");
+        locationTextView.setText(text);
+
+        Double lat = (Double) mSelectedDiary.get("Lat");
+        Double lon = (Double) mSelectedDiary.get("Lon");
+
+        String mood = (String) mSelectedDiary.get("Mood");
 
         mapTextView.setOnClickListener(new View.OnClickListener() {
             @Override
