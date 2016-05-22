@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,13 +64,21 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     TextView mColorTextView;
     String currentDateandTime;
     String mWeather;
+    ImageView mWeatherImage;
     int mSelectedColor = 0xff000000; // default black
+    Hashtable<String, Integer> table;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mWeather= intent.getStringExtra(SimpleIntentService.PARAM_OUT_MSG);
 
+            if (table.containsKey(mWeather)) {
+                mWeatherImage.setImageResource(table.get(mWeather));
+            } else {
+                // default icon
+                mWeatherImage.setImageResource(R.drawable.art_clear);
+            }
             //Toast.makeText(getContext(), mWeather, Toast.LENGTH_SHORT).show();
             //TextView result = (TextView) getView().findViewById(R.id.add_diary_location);
             //result.setText(text);
@@ -79,6 +89,16 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        table = new Hashtable<String, Integer>();
+        table.put("Clear", R.drawable.art_clear);
+        table.put("Clouds", R.drawable.art_clouds);
+        table.put("Fog", R.drawable.art_fog);
+        table.put("Light Clouds", R.drawable.art_light_clouds);
+        table.put("Light Rain", R.drawable.art_light_rain);
+        table.put("Rain", R.drawable.art_rain);
+        table.put("Snow",R.drawable.art_snow);
+        table.put("Storm",R.drawable.art_storm);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
@@ -105,9 +125,10 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
                 getActivity().finish();
                 return true;
             default:
-                super.onOptionsItemSelected(item);
-            return true;
+                return super.onOptionsItemSelected(item);
+
         }
+
     }
 
     @Override
@@ -139,7 +160,7 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         dateTextView = (TextView) rootView.findViewById(R.id.add_diary_time_date);
         contentEditText = (EditText) rootView.findViewById(R.id.add_diary_content);
         mColorTextView = (TextView) rootView.findViewById(R.id.add_diary_mood_color);
-
+        mWeatherImage = (ImageView) rootView.findViewById(R.id.add_diary_weather);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
         currentDateandTime = sdf.format(new Date());
 

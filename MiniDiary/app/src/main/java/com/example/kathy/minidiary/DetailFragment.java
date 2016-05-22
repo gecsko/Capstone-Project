@@ -10,17 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Objects;
 
 public class DetailFragment extends Fragment {
 
     private HashMap<String, Object> mSelectedDiary;
+    Hashtable<String, Integer> table;
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -47,6 +50,7 @@ public class DetailFragment extends Fragment {
         TextView dateTimeTextView = (TextView) rootView.findViewById(R.id.detail_date_time);
         TextView contentTextView = (TextView) rootView.findViewById(R.id.detail_content);
         TextView mapTextView = (TextView) rootView.findViewById(R.id.detail_map);
+        ImageView weatherView = (ImageView) rootView.findViewById(R.id.detail_weather);
 
         String text = (String) mSelectedDiary.get("Title");
         titleTextView.setText(text);
@@ -64,7 +68,27 @@ public class DetailFragment extends Fragment {
         Log.d("Color", Integer.toString(mood));
         contentTextView.setTextColor(mood);
 
-        Toast.makeText(getContext(), (String) mSelectedDiary.get("Weather"), Toast.LENGTH_SHORT).show();
+        table = new Hashtable<String, Integer>();
+        table.put("Clear", R.drawable.art_clear);
+        table.put("Clouds", R.drawable.art_clouds);
+        table.put("Fog", R.drawable.art_fog);
+        table.put("Light Clouds", R.drawable.art_light_clouds);
+        table.put("Light Rain", R.drawable.art_light_rain);
+        table.put("Rain", R.drawable.art_rain);
+        table.put("Snow",R.drawable.art_snow);
+        table.put("Storm",R.drawable.art_storm);
+
+        String weather = (String) mSelectedDiary.get("Weather");
+
+        if (table.containsKey(weather)) {
+            weatherView.setImageResource(table.get(weather));
+        } else {
+            // default icon
+            weatherView.setImageResource(R.drawable.art_clear);
+        }
+
+        //weatherView.setImageResource(R.drawable.art_clear);
+        //Toast.makeText(getContext(), (String) mSelectedDiary.get("Weather"), Toast.LENGTH_SHORT).show();
 
         mapTextView.setOnClickListener(new View.OnClickListener() {
             @Override
