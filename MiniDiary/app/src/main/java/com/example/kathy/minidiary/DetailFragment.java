@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import org.w3c.dom.Text;
 
@@ -35,15 +37,20 @@ public class DetailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
+        AdView mAdView = (AdView) rootView.findViewById(R.id.adView);
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         Intent intent = getActivity().getIntent();
 
         if (intent != null && intent.hasExtra("selectedDiary")) {
-            Log.d("hi", "r1");
             mSelectedDiary = (HashMap<String, Object>) intent.getSerializableExtra("selectedDiary");
 
         } else if (getArguments() != null){
-            Log.d("hi", "r2");
-            //mTopTen = getArguments().getString("selectedArtistId");
+            mSelectedDiary = (HashMap<String, Object>)  getArguments().getSerializable("selectedDiary");
         }
 
         TextView titleTextView = (TextView) rootView.findViewById(R.id.detail_title);

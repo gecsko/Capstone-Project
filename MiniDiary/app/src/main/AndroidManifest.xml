@@ -13,6 +13,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +34,20 @@
         <provider
             android:name=".data.DiaryProvider"
             android:authorities="com.example.kathy.minidiary" />
+
+        <!--Widget -->
+        <receiver
+            android:name=".NowWidgetProvider"
+            android:label="Now Diary" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.kathy.minidiary.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_now" />
+        </receiver>
+
+        <service android:name=".NowWidgetIntentService" />
 
     </application>
 

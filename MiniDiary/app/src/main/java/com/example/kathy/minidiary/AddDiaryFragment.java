@@ -53,6 +53,9 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     public static final String ACTION_RESP = "com.mamlambo.intent.action.MESSAGE_PROCESSED";
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 100;
 
+    public static final String ACTION_DATA_UPDATED =
+            "com.example.kathy.minidiary.ACTION_DATA_UPDATED";
+
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
@@ -122,13 +125,13 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         switch(item.getItemId()) {
             case 0:
                 Save();
+                updateWidgets();
                 getActivity().finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
 
         }
-
     }
 
     @Override
@@ -305,5 +308,12 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
             Toast.makeText(getContext(), "Title cannot be empty.", Toast.LENGTH_SHORT).show();
         }
         //Toast.makeText(getContext(), "YEAH", Toast.LENGTH_SHORT).show();
+    }
+    private void updateWidgets() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 }
