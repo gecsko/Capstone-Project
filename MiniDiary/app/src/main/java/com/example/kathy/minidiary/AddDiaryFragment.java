@@ -43,6 +43,7 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -66,21 +67,26 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     EditText contentEditText;
     TextView mColorTextView;
     String currentDateandTime;
-    String mWeather;
+    String mWeather = null;
     ImageView mWeatherImage;
     int mSelectedColor = 0xff000000; // default black
+    Boolean mTwoPaneMode = false;
     Hashtable<String, Integer> table;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mWeather= intent.getStringExtra(SimpleIntentService.PARAM_OUT_MSG);
+            mWeather = intent.getStringExtra(SimpleIntentService.PARAM_OUT_MSG);
 
-            if (table.containsKey(mWeather)) {
-                mWeatherImage.setImageResource(table.get(mWeather));
+            if (mWeather.equals(getString(R.string.no_network))){
+                Toast.makeText(getContext(), "No network connected. Cannot provide current weather!!!", Toast.LENGTH_SHORT).show();
             } else {
-                // default icon
-                mWeatherImage.setImageResource(R.drawable.art_clear);
+                if (table.containsKey(mWeather)) {
+                    mWeatherImage.setImageResource(table.get(mWeather));
+                } else {
+                    // default icon
+                    mWeatherImage.setImageResource(R.drawable.art_clear);
+                }
             }
             //Toast.makeText(getContext(), mWeather, Toast.LENGTH_SHORT).show();
             //TextView result = (TextView) getView().findViewById(R.id.add_diary_location);
@@ -105,7 +111,6 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
-                    .enableAutoManage(this.getActivity(), this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .build();
@@ -115,7 +120,9 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        savemenu = menu.add(0, 0, 0,"Save");
+        inflater.inflate(R.menu.add_diary_save, menu);
+
+        //savemenu = menu.add(0, 0, 0,"Save");
         //save icon
         //fav.setIcon(R.drawable.);
     }
@@ -123,10 +130,16 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case 0:
-                Save();
-                updateWidgets();
-                getActivity().finish();
+            case R.id.action_save:
+                if (save() == true) {
+                    updateWidgets();
+
+                    if (mTwoPaneMode == false) {
+                        getActivity().finish();
+                    } else {
+                        ((MainActivity) getActivity()).destroyFragment();
+                    }
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -138,15 +151,26 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     public void onStart() {
         super.onStart();
 
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.connect();
+
         IntentFilter filter = new IntentFilter(AddDiaryFragment.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
 
+
+
     @Override
     public void onStop() {
-        getActivity().unregisterReceiver(mBroadcastReceiver);
         super.onStop();
+
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+
+        getActivity().unregisterReceiver(mBroadcastReceiver);
+
     }
 
     public AddDiaryFragment() {
@@ -156,6 +180,11 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (getArguments() != null){
+            mTwoPaneMode = (Boolean) getArguments().getBoolean("twoPaneMode");
+        }
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_diary, container, false);
 
@@ -277,7 +306,7 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         }
     }
 
-    private void Save()
+    private boolean save()
     {
         String title = titleEditText.getText().toString();
         int content_length = contentEditText.getText().length();
@@ -300,14 +329,17 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
                 Log.d("Tag", diaryUri.toString());
                 // insert
                 getContext().getContentResolver().insert(diaryUri, contentValues);
+                return true;
 
             } else {
                 Toast.makeText(getContext(), "Content length over max (130 words)", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getContext(), "Title cannot be empty.", Toast.LENGTH_SHORT).show();
+
         }
         //Toast.makeText(getContext(), "YEAH", Toast.LENGTH_SHORT).show();
+        return false;
     }
     private void updateWidgets() {
         Context context = getContext();

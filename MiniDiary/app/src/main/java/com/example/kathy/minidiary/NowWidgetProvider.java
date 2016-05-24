@@ -74,11 +74,13 @@ public class NowWidgetProvider extends AppWidgetProvider {
             table.put("Snow",R.drawable.art_snow);
             table.put("Storm",R.drawable.art_storm);
 
-            if (table.containsKey(weather)) {
-                views.setImageViewResource(R.id.widget_weather, table.get(weather));
-            } else {
-                // default icon
-               views.setImageViewResource(R.id.widget_weather, R.drawable.art_clear);
+            if (!(weather.equals(context.getString(R.string.no_network)))) {
+                if (table.containsKey(weather)) {
+                    views.setImageViewResource(R.id.widget_weather, table.get(weather));
+                } else if (weather != null) {
+                    // default icon
+                    views.setImageViewResource(R.id.widget_weather, R.drawable.art_clear);
+                }
             }
 
             /// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {

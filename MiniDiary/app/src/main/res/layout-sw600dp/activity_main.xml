@@ -6,6 +6,7 @@
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
+    android:fitsSystemWindows="true"
     >
     <!--
 This layout is a two-pane layout for the Items master/detail flow.
@@ -15,7 +16,8 @@ This layout is a two-pane layout for the Items master/detail flow.
         android:id="@+id/framelayout_main"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2" />
+        android:layout_weight="2"
+        />
 
     <FrameLayout
         android:id="@+id/detail_diary_frame"

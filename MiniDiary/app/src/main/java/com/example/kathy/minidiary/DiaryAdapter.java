@@ -23,7 +23,7 @@ public class DiaryAdapter extends CursorAdapter {
     public DiaryAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
-    Hashtable<String, Integer> table;
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_listview_item, parent, false);
@@ -36,7 +36,7 @@ public class DiaryAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        table = new Hashtable<String, Integer>();
+        Hashtable<String, Integer> table = new Hashtable<String, Integer>();
         table.put("Clear", R.drawable.ic_clear);
         table.put("Clouds", R.drawable.ic_cloudy);
         table.put("Fog", R.drawable.ic_fog);
@@ -51,11 +51,14 @@ public class DiaryAdapter extends CursorAdapter {
         viewHolder.mTitleTextView.setTextColor(cursor.getInt(MainFragment.COL_MOOD));
 
         String weather = cursor.getString(MainFragment.COL_WEATHER);
-        if (table.containsKey(weather)) {
-            viewHolder.mWeatherView.setImageResource(table.get(weather));
-        } else {
-            // default icon
-            viewHolder.mWeatherView.setImageResource(R.drawable.art_clear);
+
+        if (weather != null && (!(weather.equals(context.getString(R.string.no_network))))) {
+            if (table.containsKey(weather)) {
+                viewHolder.mWeatherView.setImageResource(table.get(weather));
+            } else {
+                // default icon
+                viewHolder.mWeatherView.setImageResource(R.drawable.art_clear);
+            }
         }
     }
 

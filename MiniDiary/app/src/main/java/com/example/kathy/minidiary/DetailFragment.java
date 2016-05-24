@@ -87,11 +87,13 @@ public class DetailFragment extends Fragment {
 
         String weather = (String) mSelectedDiary.get("Weather");
 
-        if (table.containsKey(weather)) {
-            weatherView.setImageResource(table.get(weather));
-        } else {
-            // default icon
-            weatherView.setImageResource(R.drawable.art_clear);
+        if (!(weather.equals(getString(R.string.no_network)))) {
+            if (table.containsKey(weather)) {
+                weatherView.setImageResource(table.get(weather));
+            } else if (weather != null) {
+                // default icon
+                weatherView.setImageResource(R.drawable.art_clear);
+            }
         }
 
         //weatherView.setImageResource(R.drawable.art_clear);

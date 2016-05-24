@@ -84,7 +84,7 @@ public class SimpleIntentService extends IntentService {
             StringBuffer buffer = new StringBuffer();
 
             if (inputStream == null) {
-                // Nothing to do.
+
                 return;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -112,6 +112,13 @@ public class SimpleIntentService extends IntentService {
             sendBroadcast(broadcastIntent);
 
         } catch (IOException e) {
+            // processing done here….
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(AddDiaryFragment.ACTION_RESP);
+            broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+            broadcastIntent.putExtra(PARAM_OUT_MSG, getString(R.string.no_network));
+            sendBroadcast(broadcastIntent);
+
             Log.e("Get Weather", "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.

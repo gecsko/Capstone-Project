@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             detailFragment.setArguments(data);
 
             getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
                     .replace(R.id.detail_diary_frame, detailFragment)
                     .commit();
         } else {
@@ -61,13 +63,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void destroyFragment()
+    {
+        getSupportFragmentManager().popBackStack();
+    }
+
     public void openAddDiaryFragment() {
 
         if (twoPaneMode) {
 
+            View detailView = findViewById(R.id.detail_diary_frame);
+
+            Bundle data = new Bundle();
+
+            data.putBoolean("twoPaneMode", twoPaneMode);
+
             AddDiaryFragment addDiaryFragment = new AddDiaryFragment();
+            addDiaryFragment.setArguments(data);
 
             getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
                     .replace(R.id.detail_diary_frame, addDiaryFragment)
                     .commit();
         } else {
