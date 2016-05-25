@@ -19,7 +19,7 @@
     <string name="diary_content">Diary Content</string>
     <string name="ad">ad</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
     <string name="add_diary">Add Diary</string>
     <string name="weather_icon">weather icon</string>
     <string name="list_view_weather_icon">list view weather icon</string>
@@ -32,5 +32,8 @@
     <string name="reminde_msg">If we know your location, we  can save it in diary and get the weather information for you.</string>
     <string name="over_max_word_msg">Content length over max (130 words)</string>
     <string name="emtry_title_msg">Title cannot be empty.</string>
-    <string name="open_weather_api_key">bde61e667c6dd574c0508f9e768badbe</string>
+
+    <!-- api key -->
+    <string name="open_weather_api_key">KEY HERE</string>
+    <string name="banner_ad_unit_id">KEY HERE</string>
 </resources>
