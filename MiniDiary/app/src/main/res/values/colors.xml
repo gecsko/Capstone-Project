@@ -6,4 +6,8 @@
     <color name="SkyBlue">#ff0077FF</color>
     <color name="Orange">#ffff7700</color>
     <color name="Pink">#ffff4081</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="blue">#0077ff</color>
+    <color name="transparent">#77ff4081</color>
 </resources>

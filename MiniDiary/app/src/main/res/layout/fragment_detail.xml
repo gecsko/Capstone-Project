@@ -1,92 +1,88 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.kathy.minidiary.DetailFragment">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/appbar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:elevation="@dimen/appbar_elevation">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/detail_weather"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/image_weather"
+
+                android:transitionName="weatherIcon"
+                android:contentDescription="@string/weather_icon"
+                android:elevation="@dimen/appbar_elevation"
+                />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/actionbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <!-- user content -->
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="108dp"
-                android:layout_weight="3"
-                android:orientation="vertical"
-                android:layout_margin="8dp">
-
-                <TextView
-                    android:id="@+id/detail_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:contentDescription="Diary Title"
-                    android:text="Go Shopping with Sandy"
-                    android:textSize="20sp"
-                    android:layout_margin="8dp"/>
-
-                <TextView
-                    android:id="@+id/detail_date_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:contentDescription="The moment Date and Time"
-                    android:text="13:15 02052016"
-                    android:textSize="10sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="164dp"
+            <TextView
+                android:id="@+id/detail_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/activity_horizontal_padding"
+                android:layout_marginTop="@dimen/activity_vertical_padding_top"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_margin="8dp">
+                android:contentDescription="@string/date_time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                />
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/detail_weather"
-                    android:layout_margin="16dp"/>
+            <TextView
+                android:id="@+id/detail_map"
+                android:layout_width="@dimen/image_view_size"
+                android:layout_height="@dimen/icon_view_size"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:background="@color/colorAccent"
+                android:clickable="true"
+                android:paddingTop="@dimen/little_padding"
+                android:text="@string/map"
+                android:gravity="center"
+                android:layout_gravity="end"
+                android:textColor="@color/white" />
 
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/detail_map"
-                    android:layout_margin="16dp"
-                    android:text="Map"
-                    android:textColor="@color/white"
-                    android:textAlignment="center"
-                    android:paddingTop="4dp"
-                    android:clickable="true"
-                    android:background="@color/colorAccent"/>
-                </LinearLayout>
+            <TextView
+                android:id="@+id/detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:contentDescription="@string/diary_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/detail_content"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:contentDescription="Diary Content"
-            android:layout_margin="16dp"/>
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id"
-            android:contentDescription="ad">
-        </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-</FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

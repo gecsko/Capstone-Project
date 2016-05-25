@@ -3,7 +3,6 @@ package com.example.kathy.minidiary;
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Debug;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -28,11 +27,13 @@ public class SimpleIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        long latmsg = intent.getLongExtra(PARAM_IN_LAT_MSG, 0);
-        long lonmsg = intent.getLongExtra(PARAM_IN_LON_MSG, 0);
+        double latmsg = intent.getDoubleExtra(PARAM_IN_LAT_MSG, 0);
+        double lonmsg = intent.getDoubleExtra(PARAM_IN_LON_MSG, 0);
 
-        Log.d("HandleIntent", Long.toString(latmsg));
-        Log.d("HandleIntent", Long.toString(lonmsg));
+        String latStr =  String.format("%.8f",latmsg);
+        String lonStr =  String.format("%.8f",lonmsg);
+
+
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -42,8 +43,6 @@ public class SimpleIntentService extends IntentService {
         String weatherJsonStr = null;
 
         String format = "json";
-        //String units = "metric";
-        //int numDays = 14;
 
         String weather;
         try {
@@ -56,14 +55,12 @@ public class SimpleIntentService extends IntentService {
             final String LON_PARAM = "lon";
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(LAT_PARAM, Long.toString(latmsg))
-                    .appendQueryParameter(LON_PARAM, Long.toString(lonmsg))
-                    .appendQueryParameter("APPID", "bde61e667c6dd574c0508f9e768badbe")
+                    .appendQueryParameter(LAT_PARAM, latStr)
+                    .appendQueryParameter(LON_PARAM, lonStr)
+                    .appendQueryParameter("APPID", getString(R.string.open_weather_api_key))
                     .build();
 
             URL url = new URL(builtUri.toString());
-
-            Log.d("tag", builtUri.toString());
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -119,7 +116,6 @@ public class SimpleIntentService extends IntentService {
             broadcastIntent.putExtra(PARAM_OUT_MSG, getString(R.string.no_network));
             sendBroadcast(broadcastIntent);
 
-            Log.e("Get Weather", "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
         } catch (JSONException e) {
@@ -137,8 +133,6 @@ public class SimpleIntentService extends IntentService {
                 }
             }
         }
-
-
     }
 
     private String getWeatherDataFromJson(String forecastJsonStr) throws JSONException
@@ -157,7 +151,6 @@ public class SimpleIntentService extends IntentService {
             Log.e("Get Weather", e.getMessage(), e);
             e.printStackTrace();
         }
-
         return weather;
     }
 }

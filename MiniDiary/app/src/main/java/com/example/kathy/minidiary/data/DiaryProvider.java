@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class DiaryProvider extends ContentProvider {
 
@@ -22,16 +21,10 @@ public class DiaryProvider extends ContentProvider {
     static final int DIARY_WITH_ID = 101;
 
     static UriMatcher buildUriMatcher() {
-        // I know what you're thinking.  Why create a UriMatcher when you can use regular
-        // expressions instead?  Because you're not crazy, that's why.
 
-        // All paths added to the UriMatcher have a corresponding code to return when a match is
-        // found.  The code passed into the constructor represents the code to return for the root
-        // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = DiaryContract.CONTENT_AUTHORITY;
 
-        // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, DiaryContract.PATH_DIARY, DIARY);
         matcher.addURI(authority, DiaryContract.PATH_DIARY + "/#", DIARY_WITH_ID);
 

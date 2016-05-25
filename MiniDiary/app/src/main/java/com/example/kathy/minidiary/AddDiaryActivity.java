@@ -12,11 +12,7 @@ public class AddDiaryActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_add_diary);
 
-
-
-       // getSupportActionBar().setHomeButtonEnabled(true);
-       // getSupportActionBar().setDisplayShowHomeEnabled(true);
-       // getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(R.string.new_diary);
 
         if (savedInstanceState == null) {
             AddDiaryFragment addDiaryFragment = new AddDiaryFragment();

@@ -3,26 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
-    android:orientation="horizontal"
-    android:fitsSystemWindows="true"
-    >
-    <!--
-This layout is a two-pane layout for the Items master/detail flow.
--->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-    <FrameLayout
-        android:id="@+id/framelayout_main"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:divider="?android:attr/dividerHorizontal"
+        android:orientation="horizontal">
 
-    <FrameLayout
-        android:id="@+id/detail_diary_frame"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3" />
+        <FrameLayout
+            android:id="@+id/framelayout_main"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            />
+
+        <FrameLayout
+            android:id="@+id/detail_diary_frame"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
+    </LinearLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:foregroundGravity="bottom"
+        android:contentDescription="@string/ad"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/banner_ad_unit_id" />
 
 </LinearLayout>
+

@@ -25,8 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity" android:parentActivityName=".MainActivity"/>
-        <activity android:name=".AddDiaryActivity" android:parentActivityName=".MainActivity" />
+        <activity android:name=".DetailActivity" android:parentActivityName=".MainActivity" android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddDiaryActivity" android:parentActivityName=".MainActivity"  />
 
         <service android:name=".SimpleIntentService" />
 
@@ -38,7 +38,7 @@
         <!--Widget -->
         <receiver
             android:name=".NowWidgetProvider"
-            android:label="Now Diary" >
+            android:label="@string/widget_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.example.kathy.minidiary.ACTION_DATA_UPDATED" />

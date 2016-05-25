@@ -1,25 +1,23 @@
 package com.example.kathy.minidiary;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,21 +35,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.thebluealliance.spectrum.SpectrumDialog;
-import com.thebluealliance.spectrum.SpectrumPreference;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
 
 public class AddDiaryFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public static final String ACTION_RESP = "com.mamlambo.intent.action.MESSAGE_PROCESSED";
+    public static final String ACTION_RESP = "com.example.kathy.minidiary.intent.action.MESSAGE_PROCESSED";
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 100;
 
     public static final String ACTION_DATA_UPDATED =
@@ -60,18 +52,16 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
-    MenuItem savemenu;
-
-    EditText titleEditText;
-    TextView dateTextView;
-    EditText contentEditText;
+    EditText mTitleEditText;
+    TextView mDateTextView;
+    EditText mContentEditText;
     TextView mColorTextView;
-    String currentDateandTime;
+    String mCurrentDateandTime;
     String mWeather = null;
     ImageView mWeatherImage;
     int mSelectedColor = 0xff000000; // default black
     Boolean mTwoPaneMode = false;
-    Hashtable<String, Integer> table;
+    Hashtable<String, Integer> mTable;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -79,19 +69,15 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
             mWeather = intent.getStringExtra(SimpleIntentService.PARAM_OUT_MSG);
 
             if (mWeather.equals(getString(R.string.no_network))){
-                Toast.makeText(getContext(), "No network connected. Cannot provide current weather!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.no_network_msg_weather, Toast.LENGTH_SHORT).show();
             } else {
-                if (table.containsKey(mWeather)) {
-                    mWeatherImage.setImageResource(table.get(mWeather));
+                if (mTable.containsKey(mWeather)) {
+                    mWeatherImage.setImageResource(mTable.get(mWeather));
                 } else {
                     // default icon
                     mWeatherImage.setImageResource(R.drawable.art_clear);
                 }
             }
-            //Toast.makeText(getContext(), mWeather, Toast.LENGTH_SHORT).show();
-            //TextView result = (TextView) getView().findViewById(R.id.add_diary_location);
-            //result.setText(text);
-            //result.setText(text);
         }
     };
 
@@ -99,15 +85,15 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        table = new Hashtable<String, Integer>();
-        table.put("Clear", R.drawable.art_clear);
-        table.put("Clouds", R.drawable.art_clouds);
-        table.put("Fog", R.drawable.art_fog);
-        table.put("Light Clouds", R.drawable.art_light_clouds);
-        table.put("Light Rain", R.drawable.art_light_rain);
-        table.put("Rain", R.drawable.art_rain);
-        table.put("Snow",R.drawable.art_snow);
-        table.put("Storm",R.drawable.art_storm);
+        mTable = new Hashtable<String, Integer>();
+        mTable.put("Clear", R.drawable.art_clear);
+        mTable.put("Clouds", R.drawable.art_clouds);
+        mTable.put("Fog", R.drawable.art_fog);
+        mTable.put("Light Clouds", R.drawable.art_light_clouds);
+        mTable.put("Light Rain", R.drawable.art_light_rain);
+        mTable.put("Rain", R.drawable.art_rain);
+        mTable.put("Snow",R.drawable.art_snow);
+        mTable.put("Storm",R.drawable.art_storm);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
@@ -121,20 +107,16 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.add_diary_save, menu);
-
-        //savemenu = menu.add(0, 0, 0,"Save");
-        //save icon
-        //fav.setIcon(R.drawable.);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_save:
-                if (save() == true) {
+                if (save()) {
                     updateWidgets();
 
-                    if (mTwoPaneMode == false) {
+                    if (!mTwoPaneMode) {
                         getActivity().finish();
                     } else {
                         ((MainActivity) getActivity()).destroyFragment();
@@ -158,8 +140,6 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         getActivity().registerReceiver(mBroadcastReceiver, filter);
     }
-
-
 
     @Override
     public void onStop() {
@@ -188,15 +168,15 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_diary, container, false);
 
-        titleEditText = (EditText) rootView.findViewById(R.id.add_diary_title);
-        dateTextView = (TextView) rootView.findViewById(R.id.add_diary_time_date);
-        contentEditText = (EditText) rootView.findViewById(R.id.add_diary_content);
+        mTitleEditText = (EditText) rootView.findViewById(R.id.add_diary_title);
+        mDateTextView = (TextView) rootView.findViewById(R.id.add_diary_time_date);
+        mContentEditText = (EditText) rootView.findViewById(R.id.add_diary_content);
         mColorTextView = (TextView) rootView.findViewById(R.id.add_diary_mood_color);
         mWeatherImage = (ImageView) rootView.findViewById(R.id.add_diary_weather);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd-MM-yyyy");
-        currentDateandTime = sdf.format(new Date());
+        mCurrentDateandTime = sdf.format(new Date());
 
-        dateTextView.setText(currentDateandTime);
+        mDateTextView.setText(mCurrentDateandTime);
 
         mColorTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +198,7 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
                         }
                     }
                 });
-                spectrumDialog.show(getFragmentManager(), "abc");
+                spectrumDialog.show(getFragmentManager(), "spectrum");
             }
         });
 
@@ -230,14 +210,34 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
         //  LocationServices
         if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ) {
-            Log.d("TAG", "No right");
 
-            requestPermissions(
-                    new String[] {
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    MY_PERMISSIONS_REQUEST_FINE_LOCATION
-            );
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+                builder.setMessage(R.string.reminde_msg);
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        requestPermissions(
+                                new String[]{
+                                        Manifest.permission.ACCESS_FINE_LOCATION
+                                },
+                                MY_PERMISSIONS_REQUEST_FINE_LOCATION
+                        );
+
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        },
+                        MY_PERMISSIONS_REQUEST_FINE_LOCATION
+                );
+            }
 
             return;
         } else {
@@ -257,38 +257,23 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        Log.d("Tag", "onRequestPermissionsResult(");
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.d("Tag", "Granted");
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                     getLocation();
                 } else {
-                    Log.d("Tag", "Denided");
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
     private void getLocation() {
-        Log.d("TAG", "getLocation()");
 
-        // adb shell pm revoke com.example.kathy.minidiary android.permission.ACCESS_FINE_LOCATION
-        // adb shell pm revoke com.example.kathy.minidiary android.permission.ACCESS_COARSE_LOCATION
         if (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // no right
-            Log.d("TAG", "Not right");
             return;
         }
 
@@ -299,46 +284,52 @@ public class AddDiaryFragment extends Fragment implements GoogleApiClient.Connec
             msgIntent.putExtra(SimpleIntentService.PARAM_IN_LAT_MSG, mLastLocation.getLatitude());
             msgIntent.putExtra(SimpleIntentService.PARAM_IN_LON_MSG, mLastLocation.getLongitude());
             getActivity().startService(msgIntent);
-
-            Log.d("TAG", mLastLocation.toString());
-        } else {
-            Log.d("TAG", "Location null");
         }
     }
 
     private boolean save()
     {
-        String title = titleEditText.getText().toString();
-        int content_length = contentEditText.getText().length();
+        String title = mTitleEditText.getText().toString();
+        int content_length = mContentEditText.getText().length();
 
         if (title.length() > 0) {
             if (content_length <= 130) {
-                String content = contentEditText.getText().toString();
+            //if (content_length <= 5000) {
+                String content = mContentEditText.getText().toString();
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_TITLE, title);
-                contentValues.put(DiaryContract.DiaryEntry.COLUMN_DATE, currentDateandTime);
-                contentValues.put(DiaryContract.DiaryEntry.COLUMN_LAT, mLastLocation.getLatitude());
-                contentValues.put(DiaryContract.DiaryEntry.COLUMN_LON, mLastLocation.getLongitude());
-                contentValues.put(DiaryContract.DiaryEntry.COLUMN_WEATHER, mWeather);
+                contentValues.put(DiaryContract.DiaryEntry.COLUMN_DATE, mCurrentDateandTime);
+
+
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_MOOD, mSelectedColor);
                 contentValues.put(DiaryContract.DiaryEntry.COLUMN_CONTENT, content);
 
+                // what if mLastLocation is null?
+
+                if (mLastLocation == null) {
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_LAT, 0.0d);
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_LON, 0.0d);
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_WEATHER, "");
+                } else {
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_LAT, mLastLocation.getLatitude());
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_LON, mLastLocation.getLongitude());
+                    contentValues.put(DiaryContract.DiaryEntry.COLUMN_WEATHER, mWeather);
+                }
+
                 // Uri
                 Uri diaryUri = DiaryContract.DiaryEntry.CONTENT_URI;
-                Log.d("Tag", diaryUri.toString());
                 // insert
                 getContext().getContentResolver().insert(diaryUri, contentValues);
                 return true;
 
             } else {
-                Toast.makeText(getContext(), "Content length over max (130 words)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.over_max_word_msg, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getContext(), "Title cannot be empty.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.emtry_title_msg, Toast.LENGTH_SHORT).show();
 
         }
-        //Toast.makeText(getContext(), "YEAH", Toast.LENGTH_SHORT).show();
         return false;
     }
     private void updateWidgets() {

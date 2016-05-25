@@ -11,8 +11,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         if (savedInstanceState == null) {
             DetailFragment detailFragment = new DetailFragment();
 

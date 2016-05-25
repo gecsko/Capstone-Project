@@ -1,26 +1,21 @@
 package com.example.kathy.minidiary;
 
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ShareCompat;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import com.example.kathy.minidiary.data.DiaryContract;
 
@@ -60,10 +55,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);*/
-        //}
     }
 
     @Nullable
@@ -80,35 +71,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         listView.setAdapter(mDiaryAdapter);
         listView.setOnItemClickListener(this);
 
-        /*ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
-
-            HashMap<String, String> e1 = new HashMap<String, String>();
-            e1.put("Title", "ABC");
-            e1.put("Date", "13:15 02052016");
-            e1.put("Content", "Happy");
-
-            items.add(e1);
-
-            HashMap<String, String> e2 = new HashMap<String, String>();
-            e2.put("Title", "Shopping");
-            e2.put("Date", "14:00 03052016");
-            e2.put("Content", "Sad");
-
-            items.add(e2);
-            // Get a reference to the ListView, and attach this adapter to it.
-
-             simpleAdapter = new SimpleAdapter(this.getActivity(), items, R.layout.fragment_listview_item, new String[]{"Title", "Date", "Content"},
-                    new int[]{R.id.listview_title, R.id.listview_item_data_time, R.id.detail_location});
-             listView.setAdapter(simpleAdapter);*/
-
         rootView.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity)getActivity()).openAddDiaryFragment();
             }
         });
-        //listView.setAdapter(mUserAdapter);
-        //listView.setOnItemClickListener(this);
+
         return rootView;
     }
 
@@ -163,17 +132,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         selectedDiary.put("Mood", mood);
         selectedDiary.put("Content", content);
 
-        ((MainActivity)getActivity()).openDetailFragment(selectedDiary);
-        /*detailActivity.putExtra("title", title);
-        detailActivity.putExtra("date", date);
-        detailActivity.putExtra("location", location);
-        detailActivity.putExtra("lat", lat);
-        detailActivity.putExtra("lon", lon);
-        detailActivity.putExtra("weather", weather);
-        detailActivity.putExtra("mood", mood);
-        detailActivity.putExtra("content", content);*/
 
-        //startActivity(userDetailActivity);
-        //getActivity().startActivity(userDetailActivity, bundle);
+        // animation
+        View weatherIcon = view.findViewById(R.id.listview_item_weather);
+        Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this.getActivity(), weatherIcon, ViewCompat.getTransitionName(weatherIcon)).toBundle();
+
+        ((MainActivity)getActivity()).openDetailFragment(selectedDiary, bundle);
+
     }
 }

@@ -38,7 +38,7 @@ public class DiaryAdapter extends CursorAdapter {
 
         Hashtable<String, Integer> table = new Hashtable<String, Integer>();
         table.put("Clear", R.drawable.ic_clear);
-        table.put("Clouds", R.drawable.ic_cloudy);
+        table.put("Clouds", R.drawable.ic_clouds);
         table.put("Fog", R.drawable.ic_fog);
         table.put("Light Clouds", R.drawable.ic_light_clouds);
         table.put("Light Rain", R.drawable.ic_light_rain);
@@ -52,12 +52,12 @@ public class DiaryAdapter extends CursorAdapter {
 
         String weather = cursor.getString(MainFragment.COL_WEATHER);
 
+        // default
+        viewHolder.mWeatherView.setImageResource(R.drawable.ic_unknown);
+
         if (weather != null && (!(weather.equals(context.getString(R.string.no_network))))) {
             if (table.containsKey(weather)) {
                 viewHolder.mWeatherView.setImageResource(table.get(weather));
-            } else {
-                // default icon
-                viewHolder.mWeatherView.setImageResource(R.drawable.art_clear);
             }
         }
     }

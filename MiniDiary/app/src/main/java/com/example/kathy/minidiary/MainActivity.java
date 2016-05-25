@@ -1,17 +1,20 @@
 package com.example.kathy.minidiary;
 
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean twoPaneMode = false;
+    private boolean mTwoPaneMode = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,18 +22,26 @@ public class MainActivity extends AppCompatActivity {
 
         View detailView = findViewById(R.id.detail_diary_frame);
 
+        // ad view
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         if (detailView == null) {
             // One pane mode
-            twoPaneMode = false;
+            mTwoPaneMode = false;
         } else {
             // Two Pane Mode
-            twoPaneMode = true;
+            mTwoPaneMode = true;
         }
 
         // no matter it is in two or one pane mode, it need to have this main fragment but
         if (savedInstanceState == null) {
             Bundle data = new Bundle();
-            data.putBoolean("twoPaneMode", twoPaneMode);
+            data.putBoolean("twoPaneMode", mTwoPaneMode);
 
             MainFragment mainFragment = new MainFragment();
             mainFragment.setArguments(data);
@@ -41,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openDetailFragment(HashMap<String, Object> selectedDiary) {
+    public void openDetailFragment(HashMap<String, Object> selectedDiary, Bundle bundle) {
 
-        if (twoPaneMode) {
+        if (mTwoPaneMode) {
             // so it is two pane mode, we need to start the fragment instead of open a new activity
             Bundle data = new Bundle();
 
@@ -59,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // and open activity
             Intent intent = new Intent(this, DetailActivity.class).putExtra("selectedDiary", selectedDiary);
-            startActivity(intent);
+            //startActivity(intent);
+            ActivityCompat.startActivity(this, intent, bundle);
         }
     }
 
@@ -70,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void openAddDiaryFragment() {
 
-        if (twoPaneMode) {
+        if (mTwoPaneMode) {
 
             View detailView = findViewById(R.id.detail_diary_frame);
 
             Bundle data = new Bundle();
 
-            data.putBoolean("twoPaneMode", twoPaneMode);
+            data.putBoolean("twoPaneMode", mTwoPaneMode);
 
             AddDiaryFragment addDiaryFragment = new AddDiaryFragment();
             addDiaryFragment.setArguments(data);
@@ -89,6 +101,5 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddDiaryActivity.class);
             startActivity(intent);
         }
-
     }
 }
